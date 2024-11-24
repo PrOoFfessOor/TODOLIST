@@ -1,5 +1,3 @@
-// public/service-worker.js
-
 const CACHE_NAME = 'my-cache-v1';
 const URLS_TO_CACHE = [
   '/',
@@ -8,8 +6,9 @@ const URLS_TO_CACHE = [
   '/logo192.png',
   '/logo512.png',
   '/manifest.json',
-  '/static/js/bundle.js', // Adjust based on your build output
-  '/static/css/main.css', // Adjust based on your build output
+  // Add hashed file names here (adjust based on your build output)
+  '/static/js/main.js',
+  '/static/css/main.css',
 ];
 
 // Install event - Cache important files
@@ -25,7 +24,6 @@ self.addEventListener('install', (event) => {
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      // Return cached response if available, else fetch from network
       return cachedResponse || fetch(event.request).then((response) => {
         return caches.open(CACHE_NAME).then((cache) => {
           cache.put(event.request, response.clone());

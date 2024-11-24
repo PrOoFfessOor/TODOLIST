@@ -1,3 +1,4 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from 'react';
 import AddButton from './ToDoList/AddButton';
 import Input from './ToDoList/Input';

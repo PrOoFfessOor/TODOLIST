@@ -1,6 +1,5 @@
-import Button from './Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import Button from './Button';
 function List({ items, handleDelete }) {
   return (
     <ul className="list-group">

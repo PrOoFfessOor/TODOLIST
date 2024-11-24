@@ -1,50 +1,57 @@
+// public/service-worker.js
+
 const CACHE_NAME = 'my-cache-v1';
 const URLS_TO_CACHE = [
   '/',
   '/index.html',
+  '/manifest.json',
   '/favicon.ico',
   '/logo192.png',
   '/logo512.png',
-  '/manifest.json',
-  // Add hashed file names here (adjust based on your build output)
-  '/static/js/main.js',
-  '/static/css/main.css',
+  '/static/js/main.js', // Adjust based on build output
+  '/static/css/main.css', // Adjust based on build output
 ];
 
-// Install event - Cache important files
+// Install event
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(URLS_TO_CACHE);
     })
   );
+  self.skipWaiting(); // Activate immediately after installation
 });
 
-// Fetch event - Serve cached files or fetch from network
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      return cachedResponse || fetch(event.request).then((response) => {
-        return caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, response.clone());
-          return response;
-        });
-      });
-    })
-  );
-});
-
-// Activate event - Clear old caches
+// Activate event
 self.addEventListener('activate', (event) => {
   const cacheWhitelist = [CACHE_NAME];
-
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
+    caches.keys().then((cacheNames) =>
+      Promise.all(
         cacheNames.map((cacheName) => {
           if (!cacheWhitelist.includes(cacheName)) {
             return caches.delete(cacheName);
           }
+        })
+      )
+    )
+  );
+  self.clients.claim(); // Take control of the open clients
+});
+
+// Fetch event
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      // If cached, return response; otherwise fetch from network
+      return (
+        cachedResponse ||
+        fetch(event.request).then((networkResponse) => {
+          return caches.open(CACHE_NAME).then((cache) => {
+            // Cache fetched response
+            cache.put(event.request, networkResponse.clone());
+            return networkResponse;
+          });
         })
       );
     })

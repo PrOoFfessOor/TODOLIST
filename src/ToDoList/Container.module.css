@@ -1,0 +1,24 @@
+.Container{
+  border:2px solid black;
+  border-radius:10px;
+  width:50%;
+  height:50%;
+  max-height:400px;
+  margin:20px 40px;
+  text-align:center;
+  overflow-y:scroll;
+}
+.Input{
+width:80%;
+height:40px;
+margin-right:10px;
+font-size:25px;
+text-align:center;
+background-color:#c1c1c1;
+box-shadow:20px 20px 60px #00000041,inset -20px -20px 60px #ffffff40; 
+margin-top:10px;
+margin-bottom:10px;
+}
+.Button {
+float:right;
+}

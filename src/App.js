@@ -1,36 +1,45 @@
-import Input from './components/LiveInput'
-import Container from './components/Container'
-import Add from './Add';
-import List from "./components/List";
 import { useState } from 'react';
+import AddButton from './ToDoList/AddButton';
+import Input from './ToDoList/Input';
+import Container from './ToDoList/Container';
+import List from './ToDoList/List';
 
 function App() {
-  // Initial items in the ToDo list
-  let arr = ["rice ", "dal", "salt", "paneer"];
+  let arr = ["Go to school", "study", "play"];
+  const [tasks, setTasks] = useState(arr);
+  const [input, setInput] = useState("");
 
-  // State for ToDoList and the input value
-  let [ToDoList, SetToDoList] = useState(arr);
-  let [inputValue, setInputValue] = useState("");  // State for input value
-
-  // Handle input change (from Input component)
-  let handleOnChange = (e) => {
-    setInputValue(e.target.value);  // Update the input value
+  const handleOnChange = (e) => {
+    setInput(e.target.value);
   };
 
-  // Handle Add button click
-  let handleAdd = () => {
-    if (inputValue.trim() !== "") {  // Ensure the input isn't empty
-      SetToDoList([...ToDoList, inputValue]);  // Add the new item to the list
-      setInputValue("");  // Clear input field after adding
+  const handleOnKeyDown = (e) => {
+    if (e.key === "Enter" && input.trim() !== "") {
+      handleOnClick();
     }
+  };
+
+  const handleOnClick = () => {
+    if (input.trim() !== "" && !tasks.includes(input.trim())) {
+      setTasks([...tasks, input]);
+      setInput("");
+    }
+  };
+
+  const handleDelete = (taskToDelete) => {
+    setTasks(tasks.filter((task) => task !== taskToDelete));
   };
 
   return (
     <Container>
-      <h1>Healthy Food</h1>
-      <Input value={inputValue} handleOnChange={handleOnChange} />  {/* Pass value and onChange handler */}
-      <Add handleAdd={handleAdd} />  {/* Pass the handleAdd function */}
-      <List item={ToDoList} />  {/* Display the ToDoList */}
+      <h1>TO DO LIST</h1>
+      <Input
+        handleOnChange={handleOnChange}
+        value={input}
+        handleOnKeyDown={handleOnKeyDown}
+      />
+      <AddButton handleOnClick={handleOnClick} />
+      <List items={tasks} handleDelete={handleDelete} />
     </Container>
   );
 }
